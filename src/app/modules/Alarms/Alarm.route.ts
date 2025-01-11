@@ -15,10 +15,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.post('/alarms', upload.single('file'), AlarmController.create);
-router.get('/alarms', AlarmController.getAll);
-router.get('/alarms/:id', AlarmController.getById);
-router.put('/alarms/:id', upload.single('file'), AlarmController.update);
-router.delete('/alarms/:id', AlarmController.delete);
+router.post('/crate-alarm', upload.single('file'), AlarmController.create);
+router.get('/get-alarms', AlarmController.getAll);
+router.get('/get-alarm/:id', AlarmController.getById);
+router.put('/update-alarm/:id', upload.single('file'), AlarmController.update);
+router.delete('/delete-alarm/:id', AlarmController.delete);
 
 export const AlarmRoutes = router;

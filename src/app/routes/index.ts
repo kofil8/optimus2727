@@ -18,7 +18,7 @@ const moduleRoutes = [
     route: UserRoute,
   },
   {
-    path: '/',
+    path: '/alarms',
     route: AlarmRoutes,
   }
 
