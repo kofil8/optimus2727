@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { AlarmController } from './Alarm.controller';
 import multer from 'multer';
+import auth from '../../middlewares/auth';
+import { Role } from '@prisma/client';
 
 const router = Router();
 
@@ -15,10 +17,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.post('/crate-alarm', upload.single('file'), AlarmController.create);
+router.post('/crate-alarm', auth(Role.ADMIN), upload.single('file'), AlarmController.create);
 router.get('/get-alarms', AlarmController.getAll);
 router.get('/get-alarm/:id', AlarmController.getById);
-router.put('/update-alarm/:id', upload.single('file'), AlarmController.update);
-router.delete('/delete-alarm/:id', AlarmController.delete);
+router.put('/update-alarm/:id',  auth(Role.ADMIN), upload.single('file'), AlarmController.update);
+router.delete('/:id', AlarmController.delete);
 
 export const AlarmRoutes = router;

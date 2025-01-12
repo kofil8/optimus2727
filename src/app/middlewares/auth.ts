@@ -2,11 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 
 import config from '../../config';
 import { JwtPayload, Secret } from 'jsonwebtoken';
-
 import httpStatus from 'http-status';
-
 import prisma from '../../shared/prisma';
-import { UserStatus } from '@prisma/client';
+
 
 import ApiError from '../../errors/ApiErrors';
 import { jwtHelpers } from '../../helpars/jwtHelpers';
@@ -42,14 +40,6 @@ const auth = (...roles: string[]) => {
       if (!user) {
         throw new ApiError(httpStatus.NOT_FOUND, 'User not found!');
       }
-
-      // if (user.isDeleted == true) {
-      //   throw new ApiError(httpStatus.BAD_REQUEST, "This user is deleted ! ");
-      // }
-
-      // if (user.UserStatus === UserStatus.BLOCKED) {
-      //   throw new ApiError(httpStatus.FORBIDDEN, 'Your account is blocked!');
-      // }
 
       req.user = verifiedUser as JwtPayload;
 
@@ -96,15 +86,6 @@ export const checkOTP = async (
     if (!user) {
       throw new ApiError(httpStatus.NOT_FOUND, 'User not found!');
     }
-
-    // if (user.isDeleted == true) {
-    //   throw new ApiError(httpStatus.BAD_REQUEST, "This user is deleted ! ");
-    // }
-
-    // if (user.UserStatus === UserStatus.BLOCKED) {
-    //   throw new ApiError(httpStatus.FORBIDDEN, 'Your account is blocked!');
-    // }
-
     req.user = verifiedUser as JwtPayload;
     next();
   } catch (err) {

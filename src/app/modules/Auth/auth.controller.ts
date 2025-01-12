@@ -3,29 +3,10 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AuthServices } from './auth.service';
-import config from '../../../config';
+
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthServices.login(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'OTP sent successfully',
-    data: result,
-  });
-});
-
-const enterOtp = catchAsync(async (req: Request, res: Response) => {
-  const result = await AuthServices.enterOtp(req.body);
-
-  // res.cookie('token', result, { httpOnly: true });
-  res.cookie('token', result, {
-    secure: config.env === 'production',
-    httpOnly: true,
-    sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24 * 365,
-  });
-
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -33,6 +14,7 @@ const enterOtp = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 
 const logoutUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.user.id;
@@ -57,7 +39,7 @@ const getMyProfile = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthServices.getMyProfile(id as string);
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    statusCode: httpStatus.OK,
     message: 'User profile retrieved successfully',
     data: result,
   });
@@ -109,7 +91,6 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 
 export const AuthController = {
   loginUser,
-  enterOtp,
   logoutUser,
   getMyProfile,
   changePassword,

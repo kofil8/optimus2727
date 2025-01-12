@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import config from '../../../config';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { UserService } from './user.service';
-import ApiError from '../../../errors/ApiErrors';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.createUser(req.body);
@@ -11,12 +11,29 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
-    message: 'User information created successfully',
+    message: 'User created successfully and OTP sent',
     data: result,
   });
 });
 
+const verifyOtp = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.verifyOtp(req.body);
 
+  // res.cookie('token', result, { httpOnly: true });
+  res.cookie('token', result, {
+    secure: config.env === 'production',
+    httpOnly: true,
+    sameSite: 'none',
+    maxAge: 1000 * 60 * 60 * 24 * 365,
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'OTP verified successfully and Login successful',
+    data: result,
+  });
+});
 
 const getUserById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -78,6 +95,7 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
 
 const UserController = {
   createUser,
+  verifyOtp,
   getAllUsers,
   deleteUser,
   getUserById,
