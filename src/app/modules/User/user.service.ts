@@ -124,6 +124,7 @@ const verifyOtp = async (payload: { otp: string; hexCode: string }): Promise<str
       {
         id: user.id,
         email: user.email,
+        role: user.role,
       },
       config.jwt.jwt_secret as Secret,
       config.jwt.expires_in as string
@@ -132,15 +133,6 @@ const verifyOtp = async (payload: { otp: string; hexCode: string }): Promise<str
     return accessToken;
 };
 
-const checkUserExists = async (email: string) => {
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  return !!existingUser;
-};
-
-export { checkUserExists };
 
 const getAllUsers = async () => {
   const users = await prisma.user.findMany();
@@ -158,7 +150,8 @@ const getUserById = async (id: string) => {
   return user;
 };
 
-const deleteUser = async (userId: string, loggedId: string) => {
+const deleteUser = async (id: string, loggedId: string) => {
+  const userId = id;
   if (!ObjectId.isValid(userId)) {
     throw new ApiError(400, 'Invalid user ID format');
   }
@@ -176,9 +169,18 @@ const deleteUser = async (userId: string, loggedId: string) => {
     throw new ApiError(404, 'User not found');
   }
 
+  // Check if logged in user has admin role
+  const loggedInUser = await prisma.user.findUnique({
+    where: { id: loggedId },
+  });
+
+  if (!loggedInUser || loggedInUser.role !== 'ADMIN') {
+    throw new ApiError(403, 'Forbidden! You are not authorized!');
+  }
+
   // Delete the user
   await prisma.user.delete({
-    where: { id: userId },
+    where: { id: existingUser.id },
   });
 
   return;
@@ -186,8 +188,6 @@ const deleteUser = async (userId: string, loggedId: string) => {
 
 // update user first name and last name
 const updateUser = async (email: string, updates: UpdateUserInput) => {
-  // console.log(email);
-
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
@@ -195,7 +195,7 @@ const updateUser = async (email: string, updates: UpdateUserInput) => {
   }
 
   if ('password' in updates) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'updates are not allowed');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Password updates are not allowed');
   }
 
   const { firstName, lastName } = updates;
@@ -203,8 +203,8 @@ const updateUser = async (email: string, updates: UpdateUserInput) => {
   const updatedUser = await prisma.user.update({
     where: { email },
     data: {
-      firstName: firstName || user.firstName,
-      lastName: lastName || user.lastName,
+      firstName: firstName ?? user.firstName,
+      lastName: lastName ?? user.lastName,
     },
     select: {
       id: true,

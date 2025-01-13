@@ -7,7 +7,6 @@ export type IUser = {
 };
 
 export type UpdateUserInput = {
-  userName: string;
   password: string;
   email: string;
 };

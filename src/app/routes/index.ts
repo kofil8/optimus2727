@@ -1,8 +1,8 @@
 import express from 'express';
-
 import { AuthRoutes } from '../modules/Auth/auth.routes';
 import { UserRoute } from '../modules/User/user.route';
-import { AlarmRoutes } from '../modules/Alarms/Alarm.route';
+import { PostRoutes } from '../modules/Posts/post.routes';
+
 
 
 
@@ -18,8 +18,8 @@ const moduleRoutes = [
     route: UserRoute,
   },
   {
-    path: '/alarms',
-    route: AlarmRoutes,
+    path: '/posts',
+    route: PostRoutes,
   }
 
 ];

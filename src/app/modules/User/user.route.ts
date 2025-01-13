@@ -20,7 +20,6 @@ router.post('/otp-verify', UserController.verifyOtp);
 router.put(
   '/update',
   auth(),
-  // validateRequest(userValidation.createUserSchema),
   UserController.updateUser
 );
 
@@ -29,6 +28,8 @@ router.get('/', UserController.getAllUsers);
 router.get('/:id', UserController.getUserById);
 
 
-router.delete('/:id', auth(Role.ADMIN), UserController.deleteUser);
+router.delete('/:id',
+  auth(Role.ADMIN),
+  UserController.deleteUser);
 
 export const UserRoute = router;

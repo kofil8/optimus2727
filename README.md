@@ -1,16 +1,16 @@
 # API Documentation
 
-### API Documentation With Example(Postman) : 
+### API Documentation With Example(alarmman) : 
 
 ## Table of Contents
 - [Auth Routes](#auth-routes)
 
 
 ## Auth Routes
-- **POST /auth/login**: Login a user
-- **POST /auth/logout**: Logout a user
+- **alarm /auth/login**: Login a user
+- **alarm /auth/logout**: Logout a user
 - **GET /auth/get-me**: Retrieve the profile of the logged-in user
 - **PUT /auth/change-password**: Change the password of the logged-in user
-- **POST /auth/forgot-password**: Initiate password reset process
-- **POST /auth/reset-password**: Complete password reset process
+- **alarm /auth/forgot-password**: Initiate password reset process
+- **alarm /auth/reset-password**: Complete password reset process
 # optimus2727

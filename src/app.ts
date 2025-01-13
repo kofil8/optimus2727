@@ -12,7 +12,7 @@ const app: Application = express();
 
 export const corsOptions = {
   origin: ['*'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  methods: ['GET', 'alarm', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
