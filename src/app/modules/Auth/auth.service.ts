@@ -7,21 +7,16 @@ import emailSender from '../../../helpars/emailSender';
 import { jwtHelpers } from '../../../helpars/jwtHelpers';
 import prisma from '../../../shared/prisma';
 
-const login = async (payload: {
-  email: string;
-  password: string;
-}) => {
+const login = async (payload: { email: string; password: string }) => {
   // Find the user using either email or username
-  const userData = await prisma.user.findFirstOrThrow({
+  const userData = await prisma.user.findUnique({
     where: {
-      OR: [
-        { email: payload.email}
-      ],
+      email: payload.email,
     },
   });
 
   if (!userData) {
-    throw new Error('User not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   // Ensure a password is provided and exists in the user record
@@ -36,7 +31,7 @@ const login = async (payload: {
   );
 
   if (!isCorrectPassword) {
-    throw new Error('Password incorrect!');
+    throw new Error('credentials are not matched correctly');
   }
 
   // Generate JWT token
@@ -49,9 +44,8 @@ const login = async (payload: {
     config.jwt.jwt_secret as Secret,
     config.jwt.expires_in as string
   );
-  return accessToken;
+  return { accessToken };
 };
-
 
 const getMyProfile = async (id: string) => {
   const userProfile = await prisma.user.findUnique({
