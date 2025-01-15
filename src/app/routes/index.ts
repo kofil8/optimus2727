@@ -3,9 +3,6 @@ import { AuthRoutes } from '../modules/Auth/auth.routes';
 import { UserRoute } from '../modules/User/user.route';
 import { PostRoutes } from '../modules/Posts/post.routes';
 
-
-
-
 const router = express.Router();
 
 const moduleRoutes = [

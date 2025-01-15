@@ -18,7 +18,6 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 
 const logoutUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.user.id;
-  // Clear the token cookie
   await AuthServices.logoutUser(id as string);
   res.clearCookie('token', {
     httpOnly: true,
@@ -58,7 +57,7 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse(res, {
     success: true,
-    statusCode: 201,
+    statusCode: httpStatus.OK,
     message: 'Password changed successfully',
     data: result,
   });

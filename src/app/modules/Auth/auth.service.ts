@@ -21,7 +21,7 @@ const login = async (payload: { email: string; password: string }) => {
 
   // Ensure a password is provided and exists in the user record
   if (!payload.password || !userData?.password) {
-    throw new Error('Password is required');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Password is required');
   }
 
   // Verify the password
@@ -31,7 +31,7 @@ const login = async (payload: { email: string; password: string }) => {
   );
 
   if (!isCorrectPassword) {
-    throw new Error('credentials are not matched correctly');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'credentials are not matched');
   }
 
   // Generate JWT token
@@ -84,13 +84,13 @@ const changePassword = async (
   });
 
   if (!user || !user?.password) {
-    throw new ApiError(404, 'User not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   const isPasswordValid = await bcrypt.compare(oldPassword, user?.password);
 
   if (!isPasswordValid) {
-    throw new ApiError(401, 'Incorrect old password');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect crendentials');
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, 12);
@@ -114,7 +114,7 @@ const forgotPassword = async (payload: { email: string }) => {
     },
   });
   if (!userData) {
-    throw new ApiError(404, 'User not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   const resetPassToken = jwtHelpers.generateToken(
@@ -183,7 +183,7 @@ const resetPassword = async (
   });
 
   if (!userData) {
-    throw new ApiError(404, 'User not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   let isValidToken;
@@ -200,8 +200,6 @@ const resetPassword = async (
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden!');
   }
 
-  // console.log(payload.password);
-  // hash password
   const password = await bcrypt.hash(payload.password, 12);
 
   await prisma.user.update({

@@ -153,11 +153,11 @@ const getUserById = async (id: string) => {
 const deleteUser = async (id: string, loggedId: string) => {
   const userId = id;
   if (!ObjectId.isValid(userId)) {
-    throw new ApiError(400, 'Invalid user ID format');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid user ID format');
   }
 
   if (userId === loggedId) {
-    throw new ApiError(403, "You can't delete your own account!");
+    throw new ApiError(httpStatus.FORBIDDEN, "You can't delete your own account!");
   }
 
   // Check if user exists
@@ -166,7 +166,7 @@ const deleteUser = async (id: string, loggedId: string) => {
   });
 
   if (!existingUser) {
-    throw new ApiError(404, 'User not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   // Check if logged in user has admin role
@@ -175,7 +175,7 @@ const deleteUser = async (id: string, loggedId: string) => {
   });
 
   if (!loggedInUser || loggedInUser.role !== 'ADMIN') {
-    throw new ApiError(403, 'Forbidden! You are not authorized!');
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden! You are not authorized!');
   }
 
   // Delete the user

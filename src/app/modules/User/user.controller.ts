@@ -19,7 +19,6 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
 const verifyOtp = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.verifyOtp(req.body);
 
-  // res.cookie('token', result, { httpOnly: true });
   res.cookie('token', result, {
     secure: config.env === 'production',
     httpOnly: true,
@@ -69,7 +68,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 
   sendResponse(res, {
     success: true,
-    statusCode: 200,
+    statusCode: httpStatus.OK,
     message: 'User deleted successfully',
   });
 });
