@@ -9,6 +9,7 @@ import prisma from '../../../shared/prisma';
 
 const login = async (payload: { email: string; password: string }) => {
   // Find the user using either email or username
+
   const userData = await prisma.user.findUnique({
     where: {
       email: payload.email,
@@ -44,7 +45,7 @@ const login = async (payload: { email: string; password: string }) => {
     config.jwt.jwt_secret as Secret,
     config.jwt.expires_in as string
   );
-  return { accessToken };
+  return { accessToken, role: userData.role };
 };
 
 const getMyProfile = async (id: string) => {
