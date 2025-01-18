@@ -9,6 +9,7 @@ import prisma from '../../../shared/prisma';
 
 const login = async (payload: { email: string; password: string }) => {
   // Find the user using either email or username
+
   const userData = await prisma.user.findUnique({
     where: {
       email: payload.email,
@@ -44,7 +45,7 @@ const login = async (payload: { email: string; password: string }) => {
     config.jwt.jwt_secret as Secret,
     config.jwt.expires_in as string
   );
-  return { accessToken };
+  return { accessToken, role: userData.role };
 };
 
 const getMyProfile = async (id: string) => {
@@ -118,11 +119,13 @@ const forgotPassword = async (payload: { email: string }) => {
   }
 
   const resetPassToken = jwtHelpers.generateToken(
-    { email: userData.email, role: userData.role },
+    { email: userData.email, 
+      // role: userData.role
+    },
     config.jwt.reset_pass_secret as Secret,
     config.jwt.reset_pass_token_expires_in as string
   );
-
+console.log(config.reset_pass_link);
   const resetPassLink =
     config.reset_pass_link + `?userId=${userData.id}&token=${resetPassToken}`;
 
@@ -166,7 +169,6 @@ const forgotPassword = async (payload: { email: string }) => {
   );
   return {
     message: 'Reset password link sent via your email successfully',
-    resetPassLink,
   };
 };
 
@@ -175,8 +177,8 @@ const resetPassword = async (
   token: string,
   payload: { id: string; password: string }
 ) => {
-  // console.log(token)
-  const userData = await prisma.user.findUniqueOrThrow({
+  console.log(180, payload.id);
+  const userData = await prisma.user.findUnique({
     where: {
       id: payload.id,
     },
@@ -187,6 +189,7 @@ const resetPassword = async (
   }
 
   let isValidToken;
+  console.log(token);
   try {
     isValidToken = jwtHelpers.verifyToken(
       token,
