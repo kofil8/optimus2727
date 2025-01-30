@@ -11,7 +11,11 @@ import router from './app/routes';
 const app: Application = express();
 
 export const corsOptions = {
+<<<<<<< HEAD
   origin: ['http://localhost:3000', 'http://localhost:3001'],
+=======
+  origin: ['http://localhost:3000', '*'],
+>>>>>>> 9e2fa09adf6fb6fef7e5b4f62c9d3fd276a6841e
   methods: ['GET', 'alarm', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

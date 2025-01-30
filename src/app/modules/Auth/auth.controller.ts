@@ -4,9 +4,12 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AuthServices } from './auth.service';
 
-
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthServices.login(req.body);
+  res.cookie('accessToken', result.accessToken, {
+    secure: false,
+    httpOnly: true,
+  });
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -14,7 +17,6 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
 
 const logoutUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.user.id;
